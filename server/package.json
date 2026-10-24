@@ -1,0 +1,50 @@
+{
+  "name": "secureproctor-server",
+  "version": "1.0.0",
+  "description": "SecureProctor MERN — Backend API server",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --forceExit --detectOpenHandles",
+    "test:coverage": "node --experimental-vm-modules ../../node_modules/.bin/jest --coverage --forceExit",
+    "seed": "node src/scripts/seedDemoData.js",
+    "bootstrap-admin": "node src/scripts/bootstrapAdmin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.9",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.4",
+    "multer": "^1.4.5-lts.2",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.0.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.3.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "extensionsToTreatAsEsm": [
+      ".js"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "moduleNameMapper": {},
+    "clearMocks": true,
+    "resetMocks": false,
+    "restoreMocks": false
+  }
+}

@@ -1,0 +1,68 @@
+version: "3.9"
+
+# ============================================================
+# SecureProctor MERN — Development Docker Compose Override
+# ============================================================
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ============================================================
+
+services:
+  mongodb:
+    ports:
+      - "27017:27017"
+    # no auth in dev for simpler access
+    environment:
+      MONGO_INITDB_DATABASE: secureproctor_db
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: builder  # Use the builder stage which has devDeps
+    command: ["node", "--watch", "src/server.js"]
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGODB_URI: mongodb://mongodb:27017/secureproctor_db
+      JWT_SECRET: dev_jwt_secret_secureproctor_change_in_production_min32chars
+      COOKIE_SECRET: dev_cookie_secret_secureproctor_change_in_production_min32chars
+      JWT_EXPIRES_IN: 7d
+      CLIENT_URL: http://localhost:5173
+      MEDIA_STORAGE_PATH: /app/uploads
+      RECORDING_ENABLED: "false"
+    volumes:
+      - ./server/src:/app/src:ro
+      - server_uploads_dev:/app/uploads
+    ports:
+      - "5000:5000"
+    # Override healthcheck for faster dev startup
+    healthcheck:
+      start_period: 15s
+
+  client:
+    image: node:20-alpine
+    container_name: secureproctor_client_dev
+    working_dir: /app
+    command: ["npm", "run", "dev", "--", "--host"]
+    environment:
+      VITE_API_BASE_URL: http://localhost:5000/api/v1
+      VITE_SOCKET_URL: http://localhost:5000
+    volumes:
+      - ./client:/app:ro
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - secureproctor_net
+    depends_on:
+      - server
+
+  nginx:
+    # Skip nginx in dev; Vite proxy handles /api and /socket.io
+    profiles:
+      - nginx-dev
+
+volumes:
+  server_uploads_dev:
+    name: secureproctor_server_uploads_dev

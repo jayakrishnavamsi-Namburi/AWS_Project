@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing and coverage
+coverage/
+.nyc_output
+
+# Production builds
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pino.log
+
+# Uploads and media storage
+server/uploads/
+server_uploads/
+media_storage/
+*.mp4
+*.webm
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# SSL Certificates (Never commit production private keys)
+nginx/ssl/*.key
+nginx/ssl/*.crt
+nginx/ssl/*.pem
+!nginx/ssl/.gitkeep

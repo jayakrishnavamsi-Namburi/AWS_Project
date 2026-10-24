@@ -1,0 +1,2 @@
+# ssl certificates go here (self-signed for dev, or real certs for prod)
+# Add fullchain.pem and privkey.pem for HTTPS support
