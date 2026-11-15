@@ -1,0 +1,43 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secureproctor-frontend
+  labels:
+    app: secureproctor-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secureproctor-frontend
+  template:
+    metadata:
+      labels:
+        app: secureproctor-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: jayakrishnavamsi2005/secureproctormern-client:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

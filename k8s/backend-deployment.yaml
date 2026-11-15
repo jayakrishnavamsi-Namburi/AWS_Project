@@ -1,0 +1,33 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secureproctor-backend
+  labels:
+    app: secureproctor-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secureproctor-backend
+  template:
+    metadata:
+      labels:
+        app: secureproctor-backend
+    spec:
+      containers:
+        - name: backend
+          image: jayakrishnavamsi2005/secureproctormern-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http
+          envFrom:
+            - secretRef:
+                name: secureproctor-backend-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"

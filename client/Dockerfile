@@ -1,5 +1,4 @@
-# Stage 1: Build React Client with Vite
-FROM node:20-alpine AS builder
+﻿FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -9,35 +8,16 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve static production assets with Nginx
 FROM nginx:alpine
 
-# Remove default configuration
-RUN rm -rf /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 
-# Copy custom nginx configuration for client container
-COPY <<EOF /etc/nginx/conf.d/default.conf
-server {
-    listen 80;
-    server_name localhost;
+COPY nginx-k8s.conf /etc/nginx/conf.d/default.conf
 
-    root /usr/share/nginx/html;
-    index index.html index.htm;
-
-    location / {
-        try_files \$uri \$uri/ /index.html;
-    }
-
-    error_page 500 502 503 504 /50x.html;
-    location = /50x.html {
-        root /usr/share/nginx/html;
-    }
-}
-EOF
-
-# Copy built artifacts
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -q -O /dev/null http://127.0.0.1/health || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
